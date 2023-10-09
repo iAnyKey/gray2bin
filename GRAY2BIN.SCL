@@ -1,0 +1,69 @@
+//°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+//°                                                 °
+//°  BIN <> GRAY konvertierfunktionen               °
+//°                                                 °
+//°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+//===================================================
+//= FC200: BIN8_TO_GRAY
+//=     Nur LENGHT bits werden codiert
+//===================================================
+FUNCTION BIN8_TO_GRAY : BYTE
+VAR_INPUT
+    iIN8:    BYTE;
+    LENGTH:  INT;
+END_VAR
+VAR_TEMP
+    tIN8:   BYTE;
+    tIN8_BIT AT tIN8: ARRAY[0..7] OF BOOL;
+    i:      INT;
+    tOUT:   BYTE;
+    tOUT_BIT AT tOUT: ARRAY[0..7] OF BOOL;
+END_VAR        
+   
+    tIN8    :=  iIN8;
+    tOUT    :=  0;
+    FOR i := 0 TO LENGTH-1 DO
+        tOUT_BIT[i] :=  tIN8_BIT[i] XOR tIN8_BIT[i+1];
+    END_FOR;
+    tOUT_BIT[LENGTH-1]     :=  tIN8_BIT[LENGTH-1];
+    
+    BIN8_TO_GRAY    :=  tOUT;
+    
+END_FUNCTION
+
+
+//===================================================
+//= FC201: GRAY8_TO_BIN
+//=     Nur LENGHT bits werden codiert
+//===================================================
+FUNCTION GRAY8_TO_BIN : BYTE
+VAR_INPUT
+    iIN8:    BYTE;
+    LENGTH:  INT;
+END_VAR
+VAR_TEMP
+    tIN8:   BYTE;
+    tIN8_BIT AT tIN8: ARRAY[0..7] OF BOOL;
+    i:      INT;
+    tOUT:   BYTE;
+    tOUT_BIT AT tOUT: ARRAY[0..7] OF BOOL;
+    tXOR:   ARRAY[0..7] OF BOOL;
+END_VAR    
+    
+    //initialisieren temp variablen
+    tIN8                    :=  iIN8;
+    tOUT                    :=  0;
+    
+    tXOR[LENGTH-1]          :=  tIN8_BIT[LENGTH-1];
+    tOUT_BIT[LENGTH-1]      :=  tXOR[LENGTH-1];
+    
+    FOR i := LENGTH-2 TO 0 BY -1 DO
+        //tOUT_BIT[i] :=  tIN8_BIT[i] XOR tIN8_BIT[i+1];
+        tXOR[i]     :=  tXOR[i+1] XOR tIN8_BIT[i];
+        tOUT_BIT[i] :=  tXOR[i];
+    END_FOR;
+    
+    GRAY8_TO_BIN    :=  tOUT;
+    
+END_FUNCTION
